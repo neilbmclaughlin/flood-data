@@ -1,6 +1,6 @@
 {
   "Description": "Event rule to schedule the fgsProcess lambda execution",
-  "Name": "{{stage}}lfpFgsProcessRule",
+  "Name": "{{stage}}{{LFW_SERVICE_CODE}}FgsProcessRule",
   "RoleArn": "{{lambdaRoleArn}}",
   "ScheduleExpression": "cron(16 * * * ? *)",
   "State": "ENABLED"
