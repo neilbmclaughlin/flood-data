@@ -15,6 +15,7 @@ provider:
     stage: ${env:LFW_TARGET_ENV_NAME}
     LFW_DB_CONNECTION: ${env:LFW_DB_CONNECTION}
     LFW_SLS_BUCKET: ${env:LFW_SLS_BUCKET}
+    FWIS_API_KEY: ${env:LFW_FWIS_API_KEY}
   vpc:
     securityGroupIds:
       - ${env:LFW_VPN_SECURITY_GROUP}
