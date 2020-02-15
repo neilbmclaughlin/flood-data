@@ -3,38 +3,50 @@ const lab = exports.lab = Lab.script()
 const Code = require('@hapi/code')
 const handler = require('../../../lib/functions/fwis-process').handler
 const event = require('../../events/fwis-event.json')
-const S3 = require('../../../lib/helpers/s3')
-const Util = require('../../../lib/helpers/util')
 const Fwis = require('../../../lib/models/fwis')
+const wreck = require('../../../lib/helpers/wreck')
 
 // start up Sinon sandbox
 const sinon = require('sinon').createSandbox()
 
 lab.experiment('fwis processing', () => {
   lab.beforeEach(() => {
-    // setup mocks
-    sinon.stub(S3.prototype, 'getObject').callsFake(() => {
-      return Promise.resolve({})
-    })
-    sinon.stub(Util.prototype, 'parseXml').callsFake(() => {
-      return Promise.resolve({})
-    })
-    sinon.stub(Fwis.prototype, 'save').callsFake(() => {
-      return Promise.resolve({})
-    })
+
   })
   lab.afterEach(() => {
     // restore sinon sandbox
     sinon.restore()
   })
   lab.test('fwis process', async () => {
+    // setup mocks
+    sinon.stub(wreck, 'request').callsFake(() => {
+      return Promise.resolve({})
+    })
+    sinon.stub(Fwis.prototype, 'save').callsFake(() => {
+      return Promise.resolve({})
+    })
     await handler(event)
   })
 
   lab.test('fwis process S3 error', async () => {
-    S3.prototype.getObject = () => {
-      return Promise.reject(new Error('Test error'))
-    }
+    // setup mocks
+    sinon.stub(wreck, 'request').callsFake(() => {
+      return Promise.reject(new Error('test error'))
+    })
+    sinon.stub(Fwis.prototype, 'save').callsFake(() => {
+      return Promise.resolve({})
+    })
+    await Code.expect(handler(event)).to.reject()
+  })
+
+  lab.test('fwis process fwis error', async () => {
+    // setup mocks
+    sinon.stub(wreck, 'request').callsFake(() => {
+      return Promise.resolve({})
+    })
+    sinon.stub(Fwis.prototype, 'save').callsFake(() => {
+      return Promise.reject(new Error('test error'))
+    })
     await Code.expect(handler(event)).to.reject()
   })
 })
