@@ -7,7 +7,7 @@
   },
   "scripts": {
     "deploy": "sls deploy -v --force",
-    "integration-test": "lab test/integration -v -r console -o stdout -r junit -o test/output-integration.xml -m 30000",
+    "integration-test": "lab test/integration -v -r console -o stdout -r junit -o output-integration.xml -m 30000",
     "lint": "standard",
     "unit-test": "lab test/unit -c -r console -o stdout -r lcov -o lcov.info -r junit -o test/output-unit.xml",
     "post-deployment-test": "npm run integration-test",
