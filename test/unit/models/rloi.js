@@ -9,18 +9,13 @@ const util = new (require('../../../lib/helpers/util'))()
 const Rloi = require('../../../lib/models/rloi')
 const Db = require('../../../lib/helpers/db')
 const S3 = require('../../../lib/helpers/s3')
-
+const station = require('../../data/station.json')
 // start up Sinon sandbox
 const sinon = require('sinon').createSandbox()
 
 lab.experiment('rloi model', () => {
   lab.beforeEach(() => {
-    // setup mocks
-    sinon.stub(S3.prototype, 'getObject').callsFake(() => {
-      return Promise.resolve({
-        Body: JSON.stringify(require('../../data/station.json'))
-      })
-    })
+    sinon.stub(S3.prototype, 'getObject').resolves({ Body: JSON.stringify(station) })
     sinon.stub(Db.prototype, 'query').callsFake((query, vars) => {
       let resultQuery, resultVars
       if (typeof query === 'object') {
@@ -51,8 +46,6 @@ lab.experiment('rloi model', () => {
   })
 
   lab.test('RLOI process', async () => {
-    // sinon.restore()
-    // const db = sinon.createStubInstance(Db)
     const db = new Db(true)
     const s3 = new S3()
     const file = await util.parseXml(fs.readFileSync('./test/data/rloi-test.xml'))
