@@ -10,12 +10,13 @@ const Rloi = require('../../../lib/models/rloi')
 const Db = require('../../../lib/helpers/db')
 const S3 = require('../../../lib/helpers/s3')
 const station = require('../../data/station.json')
+const station2 = require('../../data/station2.json')
+const coastalStation = require('../../data/station-coastal.json')
 // start up Sinon sandbox
 const sinon = require('sinon').createSandbox()
 
 lab.experiment('rloi model', () => {
   lab.beforeEach(() => {
-    sinon.stub(S3.prototype, 'getObject').resolves({ Body: JSON.stringify(station) })
     sinon.stub(Db.prototype, 'query').callsFake((query, vars) => {
       let resultQuery, resultVars
       if (typeof query === 'object') {
@@ -47,7 +48,9 @@ lab.experiment('rloi model', () => {
 
   lab.test('RLOI process', async () => {
     const db = new Db(true)
-    const s3 = new S3()
+    const s3 = sinon.createStubInstance(S3, {
+      getObject: sinon.stub().resolves({ Body: JSON.stringify(station) })
+    })
     const file = await util.parseXml(fs.readFileSync('./test/data/rloi-test.xml'))
     const rloi = new Rloi(db, s3, util)
     rloi.save(file, 's3://devlfw', 'testkey')
@@ -55,48 +58,39 @@ lab.experiment('rloi model', () => {
 
   lab.test('RLOI process empty values', async () => {
     const db = new Db(true)
-    const s3 = new S3()
+    const s3 = sinon.createStubInstance(S3, {
+      getObject: sinon.stub().resolves({ Body: JSON.stringify(station) })
+    })
     const file = await util.parseXml(fs.readFileSync('./test/data/rloi-empty.xml'))
     const rloi = new Rloi(db, s3, util)
     rloi.save(file, 's3://devlfw', 'testkey')
   })
 
   lab.test('RLOI process no station', async () => {
-    S3.prototype.getObject.restore()
-    sinon.stub(S3.prototype, 'getObject').callsFake(() => {
-      return Promise.resolve()
+    const s3 = sinon.createStubInstance(S3, {
+      getObject: sinon.stub().resolves()
     })
     const db = new Db(true)
-    const s3 = new S3()
     const file = await util.parseXml(fs.readFileSync('./test/data/rloi-test.xml'))
     const rloi = new Rloi(db, s3, util)
     rloi.save(file, 's3://devlfw', 'testkey')
   })
 
   lab.test('RLOI process no station', async () => {
-    S3.prototype.getObject.restore()
-    sinon.stub(S3.prototype, 'getObject').callsFake(() => {
-      return Promise.resolve({
-        Body: JSON.stringify(require('../../data/station2.json'))
-      })
+    const s3 = sinon.createStubInstance(S3, {
+      getObject: sinon.stub().resolves({ Body: JSON.stringify(station2) })
     })
-
     const db = new Db(true)
-    const s3 = new S3()
     const file = await util.parseXml(fs.readFileSync('./test/data/rloi-test.xml'))
     const rloi = new Rloi(db, s3, util)
     rloi.save(file, 's3://devlfw', 'testkey')
   })
 
   lab.test('RLOI process no station', async () => {
-    S3.prototype.getObject.restore()
-    sinon.stub(S3.prototype, 'getObject').callsFake(() => {
-      return Promise.resolve({
-        Body: JSON.stringify(require('../../data/station-coastal.json'))
-      })
+    const s3 = sinon.createStubInstance(S3, {
+      getObject: sinon.stub().resolves({ Body: JSON.stringify(coastalStation) })
     })
     const db = new Db(true)
-    const s3 = new S3()
     const file = await util.parseXml(fs.readFileSync('./test/data/rloi-test.xml'))
     const rloi = new Rloi(db, s3, util)
     rloi.save(file, 's3://devlfw', 'testkey')
