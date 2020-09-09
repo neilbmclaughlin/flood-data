@@ -13,7 +13,7 @@ const station = require('../../data/station.json')
 const station2 = require('../../data/station2.json')
 const coastalStation = require('../../data/station-coastal.json')
 // start up Sinon sandbox
-const sinon = require('sinon').createSandbox()
+const sinon = require('sinon')
 
 function getStubS3 (station) {
   return sinon.createStubInstance(S3)
