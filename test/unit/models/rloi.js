@@ -15,6 +15,16 @@ const coastalStation = require('../../data/station-coastal.json')
 // start up Sinon sandbox
 const sinon = require('sinon').createSandbox()
 
+function getStubS3 (station) {
+  return sinon.createStubInstance(S3)
+}
+
+function getStubS3getObject (station) {
+  const stub = getStubS3()
+  stub.getObject = sinon.stub().resolves({ Body: JSON.stringify(station) })
+  return stub
+}
+
 lab.experiment('rloi model', () => {
   lab.beforeEach(() => {
     sinon.stub(Db.prototype, 'query').callsFake((query, vars) => {
@@ -48,9 +58,7 @@ lab.experiment('rloi model', () => {
 
   lab.test('RLOI process', async () => {
     const db = new Db(true)
-    const s3 = sinon.createStubInstance(S3, {
-      getObject: sinon.stub().resolves({ Body: JSON.stringify(station) })
-    })
+    const s3 = getStubS3(station)
     const file = await util.parseXml(fs.readFileSync('./test/data/rloi-test.xml'))
     const rloi = new Rloi(db, s3, util)
     rloi.save(file, 's3://devlfw', 'testkey')
@@ -58,18 +66,14 @@ lab.experiment('rloi model', () => {
 
   lab.test('RLOI process empty values', async () => {
     const db = new Db(true)
-    const s3 = sinon.createStubInstance(S3, {
-      getObject: sinon.stub().resolves({ Body: JSON.stringify(station) })
-    })
+    const s3 = getStubS3getObject(station)
     const file = await util.parseXml(fs.readFileSync('./test/data/rloi-empty.xml'))
     const rloi = new Rloi(db, s3, util)
     rloi.save(file, 's3://devlfw', 'testkey')
   })
 
   lab.test('RLOI process no station', async () => {
-    const s3 = sinon.createStubInstance(S3, {
-      getObject: sinon.stub().resolves()
-    })
+    const s3 = getStubS3()
     const db = new Db(true)
     const file = await util.parseXml(fs.readFileSync('./test/data/rloi-test.xml'))
     const rloi = new Rloi(db, s3, util)
@@ -77,9 +81,7 @@ lab.experiment('rloi model', () => {
   })
 
   lab.test('RLOI process no station', async () => {
-    const s3 = sinon.createStubInstance(S3, {
-      getObject: sinon.stub().resolves({ Body: JSON.stringify(station2) })
-    })
+    const s3 = getStubS3getObject(station2)
     const db = new Db(true)
     const file = await util.parseXml(fs.readFileSync('./test/data/rloi-test.xml'))
     const rloi = new Rloi(db, s3, util)
@@ -87,9 +89,7 @@ lab.experiment('rloi model', () => {
   })
 
   lab.test('RLOI process no station', async () => {
-    const s3 = sinon.createStubInstance(S3, {
-      getObject: sinon.stub().resolves({ Body: JSON.stringify(coastalStation) })
-    })
+    const s3 = getStubS3getObject(coastalStation)
     const db = new Db(true)
     const file = await util.parseXml(fs.readFileSync('./test/data/rloi-test.xml'))
     const rloi = new Rloi(db, s3, util)
