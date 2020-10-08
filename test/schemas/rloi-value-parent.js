@@ -1,7 +1,7 @@
 const Joi = require('@hapi/joi')
 
 module.exports = {
-  vars: Joi.array().items(
+  vars: Joi.array().required().items(
     Joi.string().regex(/\bfwfidata\/rloi\/\b.*XML$/),
     Joi.date(),
     Joi.number(),
@@ -18,5 +18,5 @@ module.exports = {
     Joi.string(),
     Joi.number()
   ),
-  query: Joi.string()
+  query: Joi.string().required().regex(/\bINSERT INTO sls_telemetry_value_parent/)
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" standalone="yes"?>
+<EATimeSeriesDataExchangeFormat xmlns="http://www.environment-agency.gov.uk/XMLSchemas/EATimeSeriesDataExchangeFormat" xmlns:md="http://www.environment-agency.gov.uk/XMLSchemas/EAMetadataFormat" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.environment-agency.gov.uk/XMLSchemas/EATimeSeriesDataExchangeFormat EATimeSeriesDataExchangeFormat.xsd">
+	<md:Publisher>Environment Agency</md:Publisher>
+	<md:Source>EA Wales Regional Telemetry System</md:Source>
+	<md:Description>Automated telemetry data export process</md:Description>
+	<md:Creator>SCX 6</md:Creator>
+	<md:Date>2018-10-03</md:Date>
+	<md:Time>09:40:09</md:Time>
+	<md:Identifier>NTC901</md:Identifier>
+	<Station stationReference="059S0800W" region="EA Wales" stationName="Illston LVL" ngr="SS5563590462"/>
+</EATimeSeriesDataExchangeFormat>

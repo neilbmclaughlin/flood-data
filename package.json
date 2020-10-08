@@ -1,7 +1,7 @@
 {
-  "name": "lfw-data",
+  "name": "flood-data",
   "version": "1.0.0",
-  "description": "Serverless (AWS Lambda) project for LFW data processing",
+  "description": "Serverless (AWS Lambda) project for flood data processing",
   "engines": {
     "node": "12.x"
   },
@@ -16,14 +16,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DEFRA/lfw-data.git"
+    "url": "git+https://github.com/DEFRA/flood-data.git"
   },
   "author": "DEFRA",
   "license": "OGL",
   "bugs": {
-    "url": "https://github.com/DEFRA/lfw-data/issues"
+    "url": "https://github.com/DEFRA/flood-data/issues"
   },
-  "homepage": "https://github.com/DEFRA/lfw-data#readme",
+  "homepage": "https://github.com/DEFRA/flood-data#readme",
   "devDependencies": {
     "@hapi/code": "^8.0.1",
     "@hapi/lab": "^22.0.4",
