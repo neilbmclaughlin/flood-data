@@ -42,7 +42,7 @@ functions:
   stationProcess:
     name: ${env:LFW_DATA_TARGET_ENV_NAME}${self:service}-stationProcess
     handler: lib/functions/station-process.handler
-    timeout: 120
+    timeout: 240
   rloiRefresh:
     name: ${env:LFW_DATA_TARGET_ENV_NAME}${self:service}-rloiRefresh
     handler: lib/functions/rloi-refresh.handler
