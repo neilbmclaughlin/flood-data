@@ -1,0 +1,35 @@
+#Beta (service refresh) flood-data release 1.1.0 - 28 October 2020
+
+This is to deploy updated processing of negative river levels.
+
+Note 1: that data processing AWS lambda functions for beta have diverged from those
+on live and a decision was taken to create a new repo for the beta app. This
+repo is https://github.com/DEFRA/flood-data and was created from the alpha
+branch of https://github.com/DEFRA/lfw-data. This will require some changes to
+the beta deployment pipeline.
+Note 2: release 3.3.0 of the flood app should be deployed before this release is
+deployed.
+
+# Tickets
+https://eaflood.atlassian.net/browse/FIS-673
+
+# Deployment pipeline updates
+
+Pipeline name: PRODUCTION/LFW_PRDG_MISC_JOBS/LFW_PRDG_99_DEPLOY_LFW_DATA_PIPELINE
+
+Actions:
+* Rename pipeline to:
+  * PRODUCTION/LFW_PRDG_MISC_JOBS/LFW_PRDG_99_DEPLOY_FLOOD_DATA_PIPELINE
+* Properties Content Changes:
+  * APP_REPO_URL=https://github.com/DEFRA/flood-data
+  * APP_REPO_BRANCH=master
+  * APP_REPO_DIRECTORY=flood-data
+
+# Deployment
+
+Please run a full code build
+Execute: PRODUCTION/LFW_PRDG_MISC_JOBS/LFW_PRDG_99_DEPLOY_FLOOD_DATA_PIPELINE
+
+Inform flood devs
+
+Thanks.
