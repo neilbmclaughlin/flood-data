@@ -2,7 +2,7 @@ const Lab = require('@hapi/lab')
 const lab = exports.lab = Lab.script()
 const Code = require('@hapi/code')
 const handler = require('../../../lib/functions/fgs-process').handler
-const S3 = require('../../../lib/helpers/s3')
+const s3 = require('../../../lib/helpers/s3')
 const wreck = require('../../../lib/helpers/wreck')
 
 // start up Sinon sandbox
@@ -18,13 +18,12 @@ lab.experiment('fgs process', () => {
   })
 
   lab.test('fgs process', async () => {
-    const putObject = sinon.stub(S3.prototype, 'putObject').callsFake((params) => {
+    const putObject = sinon.stub(s3, 'putObject').callsFake((params) => {
       Code.expect(params.Body).to.equal(JSON.stringify({ id: 'test' }))
       Code.expect(params.Key).to.include('fgs/').and.to.include('.json')
       return Promise.resolve({})
     })
     const request = sinon.stub(wreck, 'request').callsFake(() => {
-      console.log('in reqyest stub')
       return Promise.resolve({
         statements: [
           {
@@ -40,7 +39,7 @@ lab.experiment('fgs process', () => {
   })
 
   lab.test('s3 error', async () => {
-    sinon.stub(S3.prototype, 'putObject').callsFake(() => {
+    sinon.stub(s3, 'putObject').callsFake(() => {
       return Promise.reject(new Error('test error'))
     })
     sinon.stub(wreck, 'request').callsFake(() => {
