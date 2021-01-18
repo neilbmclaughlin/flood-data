@@ -7,6 +7,16 @@
 	<md:Date>2018-06-29</md:Date>
 	<md:Time>11:03:48</md:Time>
 	<md:Identifier>SEKMHSCXAS1</md:Identifier>
+	<Station stationReference="test0" region="TestRegion" stationName="Langley Bottom" ngr="SJ949714">
+		<SetofValues parameter="test" qualifier="Tipping Bucket Raingauge" dataType="Total" period="15 min" units="mm" startDate="2021-01-12" startTime="10:30:00" endDate="2021-01-12" endTime="10:30:00">
+			<Value date="2021-01-12" time="10:30:00">0.0</Value>
+		</SetofValues>
+	</Station>
+		<Station stationReference="test0" region="TestRegion" stationName="Langley Bottom" ngr="SJ949714">
+		<SetofValues parameter="Rainfall" qualifier="Tipping Bucket Raingauge" dataType="Total" period="15 min" units="mm" startDate="2021-01-12" startTime="10:30:00" endDate="2021-01-12" endTime="10:30:00">
+			<Value date="2021-01-12" time="10:30:00">0.0</Value>
+		</SetofValues>
+	</Station>
 	<Station stationReference="test1" region="TestRegion" stationName="Walton PS" ngr="SU9999099990">
 		<SetofValues parameter="Water Level" qualifier="Stage" dataType="Instantaneous" period="15 min" units="m" startDate="2018-06-29" startTime="10:15:00" endDate="2018-06-29" endTime="11:00:00">
 			<Value date="2018-06-29" time="10:15:00">1.986</Value>

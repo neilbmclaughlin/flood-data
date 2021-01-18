@@ -14,7 +14,9 @@ const sinon = require('sinon')
 const {
   valuesSchemaQueryMatcher,
   valueParentSchemaQueryMatcher,
-  valueParentSchemaVarsMatcher
+  valueParentSchemaVarsMatcher,
+  stationSchemaQueryMatcher,
+  stationSchemaVarsMatcher
 } = require('../../schemas/matchers')
 
 function clone (a) {
@@ -30,6 +32,8 @@ function getStubbedDbHelper () {
     .resolves()
     .withArgs(valueParentSchemaQueryMatcher, valueParentSchemaVarsMatcher)
     .resolves({ rows: [{ telemetry_value_parent_id: 1 }] })
+    .withArgs(stationSchemaQueryMatcher, stationSchemaVarsMatcher)
+    .resolves()
   return client
 }
 
@@ -51,9 +55,24 @@ lab.experiment('rloi model', () => {
     const client = getStubbedDbHelper()
     const file = await parseStringPromise(fs.readFileSync('./test/data/rloi-test.xml'))
     await rloi.save(file, 's3://devlfw', 'testkey', client, s3)
-    sinon.assert.callCount(client.query, 40)
-    sinon.assert.callCount(client.query.withArgs(valueParentSchemaQueryMatcher, valueParentSchemaVarsMatcher), 20)
-    sinon.assert.callCount(client.query.withArgs(valuesSchemaQueryMatcher), 20)
+    sinon.assert.callCount(client.query, 32)
+    sinon.assert.callCount(client.query.withArgs(valueParentSchemaQueryMatcher, valueParentSchemaVarsMatcher), 16)
+    sinon.assert.callCount(client.query.withArgs(valuesSchemaQueryMatcher), 16)
+  })
+
+  lab.test('RLOI process no station match', async () => {
+    sinon.restore()
+    sinon.stub(s3, 'getObject').callsFake(() => {
+      return Promise.resolve()
+    })
+    const client = getStubbedDbHelper()
+    const file = await parseStringPromise(fs.readFileSync('./test/data/rloi-test.xml'))
+    await rloi.save(file, 's3://devlfw', 'testkey', client, s3)
+    // Will only process the Water level data as no station data returned therefore rloi data not needed (this is a bit over engineered)
+    sinon.assert.callCount(client.query, 3)
+    sinon.assert.callCount(client.query.withArgs(valueParentSchemaQueryMatcher, valueParentSchemaVarsMatcher), 1)
+    sinon.assert.callCount(client.query.withArgs(valuesSchemaQueryMatcher), 1)
+    sinon.assert.callCount(client.query.withArgs(stationSchemaQueryMatcher, stationSchemaVarsMatcher), 1)
   })
 
   lab.test('single station with no set of values should not update db', async () => {
@@ -112,9 +131,9 @@ lab.experiment('rloi model', () => {
     const client = getStubbedDbHelper()
     sinon.stub(util, 'isNumeric').returns(false)
     await rloi.save(file, 's3://devlfw', 'testkey', client, s3)
-    sinon.assert.callCount(client.query, 40)
-    sinon.assert.callCount(client.query.withArgs(valueParentSchemaQueryMatcher, valueParentSchemaVarsMatcher), 20)
-    sinon.assert.callCount(client.query.withArgs(valuesSchemaQueryMatcher), 20)
+    sinon.assert.callCount(client.query, 32)
+    sinon.assert.callCount(client.query.withArgs(valueParentSchemaQueryMatcher, valueParentSchemaVarsMatcher), 16)
+    sinon.assert.callCount(client.query.withArgs(valuesSchemaQueryMatcher), 16)
   })
 
   lab.test('subtract values should be applied', async () => {
