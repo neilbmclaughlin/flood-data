@@ -27,7 +27,6 @@
   "devDependencies": {
     "@hapi/code": "^8.0.2",
     "@hapi/lab": "^24.1.0",
-    "codeclimate-test-reporter": "0.5.1",
     "serverless": "2.15.0",
     "serverless-layers": "^2.3.3",
     "sinon": "9.2.2",
