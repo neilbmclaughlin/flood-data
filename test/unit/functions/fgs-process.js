@@ -25,11 +25,10 @@ lab.experiment('fgs process', () => {
     })
     const request = sinon.stub(wreck, 'request').callsFake(() => {
       return Promise.resolve({
-        statements: [
-          {
-            id: 'test'
-          }
-        ]
+        statement:
+        {
+          id: 'test'
+        }
       })
     })
 
