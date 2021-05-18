@@ -1,0 +1,15 @@
+<?xml version="1.0" standalone="yes"?>
+<EATimeSeriesDataExchangeFormat xmlns="http://www.environment-agency.gov.uk/XMLSchemas/EATimeSeriesDataExchangeFormat" xmlns:md="http://www.environment-agency.gov.uk/XMLSchemas/EAMetadataFormat" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.environment-agency.gov.uk/XMLSchemas/EATimeSeriesDataExchangeFormat EATimeSeriesDataExchangeFormat.xsd">
+	<md:Publisher>Environment Agency</md:Publisher>
+	<md:Source>EA Wales Regional Telemetry System</md:Source>
+	<md:Description>Automated telemetry data export process</md:Description>
+	<md:Creator>SCX 6</md:Creator>
+	<md:Date>2018-10-03</md:Date>
+	<md:Time>09:40:09</md:Time>
+	<md:Identifier>NTC901</md:Identifier>
+	<Station stationReference="067015_TG 132" region="North West" stationName="Test PLUVIO RAINGAUGE station" ngr="SJ3484041474">
+		<SetofValues parameter="Rainfall" qualifier="Stage" dataType="Instantaneous" period="15 min" units="m" startDate="2018-10-03" startTime="09:15:00" endDate="2018-10-03" endTime="09:30:00">
+			<Value date="2018-06-29" time="11:00:00">1.986</Value>
+		</SetofValues>
+	</Station>
+</EATimeSeriesDataExchangeFormat>
