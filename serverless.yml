@@ -2,7 +2,7 @@ service: ${env:LFW_DATA_SERVICE_CODE}
 provider:
   name: aws
   stackName: ${env:LFW_DATA_TARGET_ENV_NAME}${self:service}
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   role: ${env:LFW_DATA_SLS_LAMBA_ROLE}
   stage: ${env:LFW_DATA_TARGET_ENV_NAME}
   region: ${env:LFW_DATA_TARGET_REGION}
