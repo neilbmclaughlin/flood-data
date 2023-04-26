@@ -1,6 +1,7 @@
 service: ${env:LFW_DATA_SERVICE_CODE}
 provider:
   name: aws
+  lambdaHashingVersion: 20201221
   stackName: ${env:LFW_DATA_TARGET_ENV_NAME}${self:service}
   runtime: nodejs14.x
   role: ${env:LFW_DATA_SLS_LAMBA_ROLE}
