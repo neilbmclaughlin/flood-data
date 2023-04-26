@@ -3,7 +3,7 @@
   "version": "1.4.0",
   "description": "Serverless (AWS Lambda) project for flood data processing",
   "engines": {
-    "node": "14.x"
+    "node": "16.x"
   },
   "scripts": {
     "deploy": "sls deploy -v --force",
