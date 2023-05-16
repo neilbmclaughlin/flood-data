@@ -3,10 +3,10 @@
     {
       "s3": {
         "bucket": {
-          "name": "devlfws3bkt001"
+          "name": "devldnlfws3bkt001"
         },
         "object": {
-          "key": "fwfidata/ENT_7024/NWFSNWTS20181214131016290.XML"
+          "key": "fwfidata/ENT_7024/THFSTHTS20230502070400000.XML"
         }
       }
     }
