@@ -6,7 +6,7 @@
     "node": "16.x"
   },
   "scripts": {
-    "deploy": "sls deploy -v --force",
+    "deploy": "sls deploy --force --verbose",
     "integration-test": "lab test/integration -v -r console -o stdout -r junit -o test/output-integration.xml -m 60000",
     "lint": "standard",
     "unit-test": "lab test/unit -c -r console -o stdout -r lcov -o coverage/lcov.info -r junit -o test/output-unit.xml",
