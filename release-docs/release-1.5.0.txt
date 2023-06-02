@@ -1,0 +1,22 @@
+#flood-data release 1.5.0 - 13th June 2023
+
+Update of npm dependancies and node version for lambda functions.
+
+Note: serverless was upgraded from v2 to v3 which was a breaking change for deployment.
+The breaking changes were almost all to do with AWS IAM permissions and in conjuction with WebOps
+we iterated and resolved until deployment to dev succeded (see slack channel for details).
+The assumtion is that the changes made for dev environment permissions will propogate through to the
+higher environments.
+
+# Tickets
+
+https://eaflood.atlassian.net/browse/FSR-941
+https://eaflood.atlassian.net/browse/FSR-863
+
+# Deployment
+
+  * LFW_{STAGE}_MISC_JOBS/LFW_{STAGE}_99_DEPLOY_FLOOD_DATA_PIPELINE
+
+Inform flood devs
+
+Thanks.
