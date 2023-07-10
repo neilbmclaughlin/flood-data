@@ -5,6 +5,9 @@ jspm_packages
 # Serverless directories
 .serverless
 
+# dotenv file
+.env
+
 #test
 test/output*
 test/*.html

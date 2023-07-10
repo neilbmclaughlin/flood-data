@@ -1,0 +1,81 @@
+[
+  {
+    "RLOIid": "2116",
+    "wiskiID": "4040",
+    "telemetryID": "4040",
+    "Name": "Stoke",
+    "TimeSeriesMetaData": [
+      {
+        "Parameter": "Level",
+        "qualifier": "Downstream Stage",
+        "Unit": "mALD",
+        "DisplayTimeSeries": false,
+        "Thresholds": [
+          {
+            "ThresholdType": "INFO RLOI PORMIN",
+            "Level": -0.642,
+            "FloodWarningArea": null
+          },
+          {
+            "ThresholdType": "INFO RLOI PERCENT95",
+            "Level": -0.538,
+            "FloodWarningArea": null
+          },
+          {
+            "ThresholdType": "INFO RLOI OTH",
+            "Level": -0.214,
+            "FloodWarningArea": null
+          },
+          {
+            "ThresholdType": "INFO RLOI PORMAX",
+            "Level": 0.203,
+            "FloodWarningArea": null
+          },
+          {
+            "ThresholdType": "FW RES FAL",
+            "Level": 1.3,
+            "FloodWarningArea": "033WAF309"
+          },
+          {
+            "ThresholdType": "FW ACTCON FW",
+            "Level": 1.37,
+            "FloodWarningArea": "033FWF3TRENT04"
+          },
+          {
+            "ThresholdType": "FW RES FW",
+            "Level": 1.77,
+            "FloodWarningArea": "033FWF3TRENT04"
+          }
+        ]
+      },
+      {
+        "Parameter": "Level",
+        "qualifier": "Stage",
+        "Unit": "mALD",
+        "DisplayTimeSeries": false,
+        "Thresholds": [
+          {
+            "ThresholdType": "INFO RLOI PORMIN",
+            "Level": 0.03,
+            "FloodWarningArea": null
+          },
+          {
+            "ThresholdType": "INFO RLOI PERCENT95",
+            "Level": 0.067,
+            "FloodWarningArea": null
+          },
+          {
+            "ThresholdType": "INFO RLOI OTH",
+            "Level": 0.388,
+            "FloodWarningArea": null
+          },
+          {
+            "ThresholdType": "INFO RLOI PORMAX",
+            "Level": 2.511,
+            "FloodWarningArea": null
+          }
+        ]
+      }
+    ]
+  }
+]

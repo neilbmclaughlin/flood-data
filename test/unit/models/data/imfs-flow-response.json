@@ -1,0 +1,136 @@
+[
+  {
+    "RLOIid": "2100",
+    "wiskiID": "4007",
+    "telemetryID": "4007",
+    "Name": "Shardlow",
+    "TimeSeriesMetaData": [
+      {
+        "Parameter": "Flow",
+        "qualifier": "",
+        "Unit": "m3/s",
+        "DisplayTimeSeries": true,
+        "Thresholds": [
+          {
+            "ThresholdType": "FW RES FW",
+            "Level": 650,
+            "FloodWarningArea": "034FWFTRLOCKHEM"
+          },
+          {
+            "ThresholdType": "FW RES FW",
+            "Level": 729,
+            "FloodWarningArea": "034FWFTRCASDONN"
+          }
+        ]
+      },
+      {
+        "Parameter": "Level",
+        "qualifier": "Stage",
+        "Unit": "mALD",
+        "DisplayTimeSeries": true,
+        "Thresholds": [
+          {
+            "ThresholdType": "INFO RLOI PORMIN",
+            "Level": 0.317,
+            "FloodWarningArea": null
+          },
+          {
+            "ThresholdType": "INFO RLOI PERCENT95",
+            "Level": 0.413,
+            "FloodWarningArea": null
+          },
+          {
+            "ThresholdType": "FW RES FAL",
+            "Level": 1.7,
+            "FloodWarningArea": "034WAF414"
+          },
+          {
+            "ThresholdType": "INFO RLOI OTH",
+            "Level": 1.7,
+            "FloodWarningArea": null
+          },
+          {
+            "ThresholdType": "FW RES FAL",
+            "Level": 2.4,
+            "FloodWarningArea": "034WAF415"
+          },
+          {
+            "ThresholdType": "FW RES FAL",
+            "Level": 2.6,
+            "FloodWarningArea": "034WAF414"
+          },
+          {
+            "ThresholdType": "FW RES FAL",
+            "Level": 2.7,
+            "FloodWarningArea": "034WAF415"
+          },
+          {
+            "ThresholdType": "FW RES FW",
+            "Level": 2.7,
+            "FloodWarningArea": "034FWFTRCAVBRDG"
+          },
+          {
+            "ThresholdType": "FW RES FW",
+            "Level": 2.8,
+            "FloodWarningArea": "034FWFTRSWARKST"
+          },
+          {
+            "ThresholdType": "FW RES FW",
+            "Level": 2.95,
+            "FloodWarningArea": "034FWFTRBARROW"
+          },
+          {
+            "ThresholdType": "FW RES FW",
+            "Level": 2.95,
+            "FloodWarningArea": "034FWFTRCASDONKM"
+          },
+          {
+            "ThresholdType": "FW RES FW",
+            "Level": 2.95,
+            "FloodWarningArea": "034FWFTRRPTING"
+          },
+          {
+            "ThresholdType": "FW RES FW",
+            "Level": 3.1,
+            "FloodWarningArea": "034FWFTRTRENTLK"
+          },
+          {
+            "ThresholdType": "FW RES FW",
+            "Level": 3.15,
+            "FloodWarningArea": "034FWFTRTHRMPTN"
+          },
+          {
+            "ThresholdType": "FW RES FW",
+            "Level": 3.15,
+            "FloodWarningArea": "034FWFTRTWYFORD"
+          },
+          {
+            "ThresholdType": "FW RES FW",
+            "Level": 3.45,
+            "FloodWarningArea": "034FWFTRSHARDLW"
+          },
+          {
+            "ThresholdType": "FW RES FW",
+            "Level": 3.45,
+            "FloodWarningArea": "034FWFTRWLLNGTN"
+          },
+          {
+            "ThresholdType": "INFO RLOI PORMAX",
+            "Level": 3.455,
+            "FloodWarningArea": null
+          },
+          {
+            "ThresholdType": "FW RES FW",
+            "Level": 3.5,
+            "FloodWarningArea": "034FWFTRNEWSAWLY"
+          },
+          {
+            "ThresholdType": "FW RES FW",
+            "Level": 3.5,
+            "FloodWarningArea": "034FWFTRSAWLEY"
+          }
+        ]
+      }
+    ]
+  }
+]
