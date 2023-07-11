@@ -1,0 +1,27 @@
+#flood-data release 1.6.0 - 13th July 2023
+
+Addition of lambda for the import of IMTD threshold data from the IMTD API 
+into the CFF database
+
+# Tickets
+
+https://eaflood.atlassian.net/browse/FSR-770
+
+# Pre deployment
+
+Copy the following jenkins jobs from pre-prod to prodg and prodb
+  * LFW_{STAGE}_MISC_JOBS/LFW_{STAGE}_99_DEPLOY_FLOOD_DATA_PIPELINE
+  * LFW_{STAGE}_MISC_JOBS/LFW_{STAGE}_99_INVOKE_IMTD_LAMBDA_FUNCTION
+
+# Deployment
+
+Run the following Jenkins jobs
+
+  * LFW_{STAGE}_MISC_JOBS/LFW_{STAGE}_99_DEPLOY_FLOOD_DATA_PIPELINE
+  * LFW_{STAGE}_MISC_JOBS/LFW_{STAGE}_99_INVOKE_IMTD_LAMBDA_FUNCTION
+
+# Post deployment 
+
+The lambda takes ~9 minutes to complete.
+On completion please post the zipped logs to the #check-for-flooding-aka-lfw slack channel
+
