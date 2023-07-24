@@ -121,10 +121,14 @@ describe('Test rloiProcess handler', () => {
     sinon.stub(s3, 'getObject')
       .onFirstCall().resolves({ Body: file })
       .callsFake(async (x) => {
-        const stationClone = clone(station)
-        stationClone.RLOI_ID = x.Key.split('/')[2]
+        // in order to check the DB inserts are correct we need to ensure that the RLOI id
+        // for the station matches that in the XML document and this comes from the key for the
+        // the requested S3 document:
+        // rloi/${item.$.region}/${item.$.stationReference}/station.json
+        // Note that all other station properties remain fixed for all responses
+        const rloiId = x.Key.split('/')[2]
         return {
-          Body: JSON.stringify(stationClone)
+          Body: JSON.stringify({ ...station, RLOI_ID: rloiId })
         }
       })
     const dateReviver = (key, value) => key.endsWith('_timestamp') ? new Date(value) : value
@@ -134,7 +138,7 @@ describe('Test rloiProcess handler', () => {
     expect(await getCounts(pool)).to.equal({ stations: 0, parents: 16, values: 57, valueParents: 57 })
     const results = await getRows(pool)
 
-    // fs.writeFileSync('./test/integration/data/parent-values.json', JSON.stringify(results.valueParents))
+    // fs.writeFileSync('./test/integration/data/parent-values.json', JSON.stringify(results.valueParents, null, 2))
 
     expect(stripVolatileProperties(results.valueParents).sort(sortFunction)).to.equal(stripVolatileProperties(checkList).sort(sortFunction))
   })
