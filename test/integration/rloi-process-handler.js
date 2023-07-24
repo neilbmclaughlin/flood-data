@@ -118,10 +118,16 @@ describe('Test rloiProcess handler', () => {
   })
   it('it should insert multiple records into DB as expected', async ({ context }) => {
     const { client } = context
-    const file = fs.readFileSync('./test/data/rloi-test.xml', 'utf8')
+    const telemetryResponse = fs.readFileSync('./test/data/rloi-test.xml', 'utf8')
     sinon.stub(s3, 'getObject')
-      .onFirstCall().resolves({ Body: file })
-      .callsFake(async (x) => {
+      .withArgs({
+        Bucket: event.Records[0].s3.bucket.name,
+        Key: event.Records[0].s3.object.key
+      }).resolves({ Body: telemetryResponse })
+      .withArgs(sinon.match({
+        Bucket: event.Records[0].s3.bucket.name,
+        Key: sinon.match(/^rloi\/.*\/.*\/station\.json/)
+      })).callsFake(async (x) => {
         // in order to check the DB inserts are correct we need to ensure that the RLOI id
         // for the station matches that in the XML document and this comes from the key for the
         // the requested S3 document:
@@ -135,12 +141,13 @@ describe('Test rloiProcess handler', () => {
     const dateReviver = (key, value) => key.endsWith('_timestamp') ? new Date(value) : value
     const checkList = JSON.parse(fs.readFileSync('./test/integration/data/parent-values.json', 'utf8'), dateReviver)
     expect(await getCounts(client)).to.equal({ stations: 0, parents: 0, values: 0, valueParents: 0 })
+
     await handler(event)
     expect(await getCounts(client)).to.equal({ stations: 0, parents: 16, values: 57, valueParents: 57 })
+
     const results = await getRows(client)
     expect(stripVolatileProperties(results.valueParents).sort(sortFunction)).to.equal(stripVolatileProperties(checkList).sort(sortFunction))
 
     // fs.writeFileSync('./test/integration/data/parent-values.json', JSON.stringify(results.valueParents, null, 2))
-
   })
 })
