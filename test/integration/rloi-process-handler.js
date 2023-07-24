@@ -1,24 +1,24 @@
 const Lab = require('@hapi/lab')
-const { describe, it, beforeEach, afterEach } = exports.lab = Lab.script()
+const { describe, it, before, after, beforeEach, afterEach } = exports.lab = Lab.script()
 const { expect } = require('@hapi/code')
 const sinon = require('sinon')
 const event = require('../events/rloi-event.json')
 const station = require('../data/station.json')
 const s3 = require('../../lib/helpers/s3')
 const fs = require('fs')
-const { Pool } = require('pg')
+const { Client } = require('pg')
 const { handler } = require('../../lib/functions/rloi-process')
 
-const getRows = async (pool) => {
-  const { rows: stations } = await pool.query('select * from u_flood.sls_telemetry_station;')
-  const { rows: parents } = await pool.query('select * from u_flood.sls_telemetry_value_parent;')
-  const { rows: values } = await pool.query('select * from u_flood.sls_telemetry_value order by value_timestamp;')
-  const { rows: valueParents } = await pool.query('select * from u_flood.sls_telemetry_value_parent tvp join u_flood.sls_telemetry_value tv on tvp.telemetry_value_parent_id = tv.telemetry_value_parent_id order by tvp.telemetry_value_parent_id asc, tv.telemetry_value_id asc;')
+const getRows = async (client) => {
+  const { rows: stations } = await client.query('select * from u_flood.sls_telemetry_station;')
+  const { rows: parents } = await client.query('select * from u_flood.sls_telemetry_value_parent;')
+  const { rows: values } = await client.query('select * from u_flood.sls_telemetry_value order by value_timestamp;')
+  const { rows: valueParents } = await client.query('select * from u_flood.sls_telemetry_value_parent tvp join u_flood.sls_telemetry_value tv on tvp.telemetry_value_parent_id = tv.telemetry_value_parent_id order by tvp.telemetry_value_parent_id asc, tv.telemetry_value_id asc;')
   return { stations, parents, values, valueParents }
 }
 
-async function getCounts (pool) {
-  const { stations, parents, values, valueParents } = await getRows(pool)
+async function getCounts (client) {
+  const { stations, parents, values, valueParents } = await getRows(client)
   return {
     stations: stations.length,
     parents: parents.length,
@@ -59,39 +59,40 @@ function clone (a) {
   return JSON.parse(JSON.stringify(a))
 }
 
-describe('Test rloiProcess handler', () => {
-  beforeEach(async ({ context }) => {
-    // setup mocks
-    // sinon.stub(s3, 'getObject').rejects()
-    const pool = new Pool({ connectionString: process.env.LFW_DATA_DB_CONNECTION })
-    await pool.query('TRUNCATE u_flood.sls_telemetry_station;')
+async function truncateTables (client) {
+  await client.query('TRUNCATE u_flood.sls_telemetry_station;')
+  await client.query('TRUNCATE u_flood.sls_telemetry_value_parent RESTART IDENTITY CASCADE;')
+}
 
-    // need to manually restart sequence as the seq is not owned by the table therefore
-    // `truncate ... restart identity` does not work
-    await pool.query('alter sequence u_flood.sls_telemetry_value_parent_telemetry_value_parent_id_seq owned by sls_telemetry_value_parent.telemetry_value_parent_id;')
-    await pool.query('alter sequence u_flood.sls_telemetry_value_telemetry_value_id_seq owned by sls_telemetry_value.telemetry_value_id;')
-    // await pool.query('alter sequence u_flood.sls_telemetry_value_telemetry_value_id_seq restart with 1;')
-    await pool.query('TRUNCATE u_flood.sls_telemetry_value_parent RESTART IDENTITY CASCADE;')
-    context.pool = pool
+describe('Test rloiProcess handler', () => {
+  before(async ({ context }) => {
+    context.client = new Client({ connectionString: process.env.LFW_DATA_DB_CONNECTION })
+    context.client.connect()
+    // need to alter the ownership of the sequences for the 'truncate ... cascade restart identity to work
+    await context.client.query('alter sequence u_flood.sls_telemetry_value_parent_telemetry_value_parent_id_seq owned by sls_telemetry_value_parent.telemetry_value_parent_id;')
+    await context.client.query('alter sequence u_flood.sls_telemetry_value_telemetry_value_id_seq owned by sls_telemetry_value.telemetry_value_id;')
+  })
+  beforeEach(async ({ context }) => {
+    truncateTables(context.client)
   })
   afterEach(async ({ context }) => {
-    // Restore after each test is Sinon best practice at time of wrting
-    // https://sinonjs.org/releases/v9.0.3/general-setup/
     sinon.restore()
-    await context.pool.end()
+  })
+  after(async ({ context }) => {
+    await context.client.end()
   })
   it('it should insert single record into DB as expected', async ({ context }) => {
-    const { pool } = context
+    const { client } = context
     const file = fs.readFileSync('./test/data/rloi-test-single.xml', 'utf8')
     sinon.stub(s3, 'getObject')
       .onFirstCall().resolves({ Body: file })
       .onSecondCall().resolves({ Body: JSON.stringify(station) })
-    expect(await getCounts(pool)).to.equal({ stations: 0, parents: 0, values: 0, valueParents: 0 })
+    expect(await getCounts(client)).to.equal({ stations: 0, parents: 0, values: 0, valueParents: 0 })
     await handler(event)
-    // await rloi.save(file, 's3://devlfw', 'testkey', pool, s3)
-    // expect(await getCounts(pool)).to.equal({ stations: 0, parents: 16, values: 57, valueParents: 57 })
-    expect(await getCounts(pool)).to.equal({ stations: 0, parents: 1, values: 1, valueParents: 1 })
-    const results = await getRows(pool)
+    // await rloi.save(file, 's3://devlfw', 'testkey', client, s3)
+    // expect(await getCounts(client)).to.equal({ stations: 0, parents: 16, values: 57, valueParents: 57 })
+    expect(await getCounts(client)).to.equal({ stations: 0, parents: 1, values: 1, valueParents: 1 })
+    const results = await getRows(client)
     expect(stripVolatileProperties(results.valueParents)[0]).to.equal({
       filename: 'fwfidata/rloi/NWTSNWFS20210112103440355.XML',
       rloi_id: 5075,
@@ -116,7 +117,7 @@ describe('Test rloiProcess handler', () => {
     })
   })
   it('it should insert multiple records into DB as expected', async ({ context }) => {
-    const { pool } = context
+    const { client } = context
     const file = fs.readFileSync('./test/data/rloi-test.xml', 'utf8')
     sinon.stub(s3, 'getObject')
       .onFirstCall().resolves({ Body: file })
@@ -133,13 +134,13 @@ describe('Test rloiProcess handler', () => {
       })
     const dateReviver = (key, value) => key.endsWith('_timestamp') ? new Date(value) : value
     const checkList = JSON.parse(fs.readFileSync('./test/integration/data/parent-values.json', 'utf8'), dateReviver)
-    expect(await getCounts(pool)).to.equal({ stations: 0, parents: 0, values: 0, valueParents: 0 })
+    expect(await getCounts(client)).to.equal({ stations: 0, parents: 0, values: 0, valueParents: 0 })
     await handler(event)
-    expect(await getCounts(pool)).to.equal({ stations: 0, parents: 16, values: 57, valueParents: 57 })
-    const results = await getRows(pool)
+    expect(await getCounts(client)).to.equal({ stations: 0, parents: 16, values: 57, valueParents: 57 })
+    const results = await getRows(client)
+    expect(stripVolatileProperties(results.valueParents).sort(sortFunction)).to.equal(stripVolatileProperties(checkList).sort(sortFunction))
 
     // fs.writeFileSync('./test/integration/data/parent-values.json', JSON.stringify(results.valueParents, null, 2))
 
-    expect(stripVolatileProperties(results.valueParents).sort(sortFunction)).to.equal(stripVolatileProperties(checkList).sort(sortFunction))
   })
 })
