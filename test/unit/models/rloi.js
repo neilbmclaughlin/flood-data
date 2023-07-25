@@ -5,7 +5,7 @@ const fs = require('fs')
 
 const util = require('../../../lib/helpers/util')
 const rloi = require('../../../lib/models/rloi')
-const { Client } = require('pg')
+const { Pool: Client } = require('../../../lib/helpers/pool')
 const s3 = require('../../../lib/helpers/s3')
 const station = require('../../data/station.json')
 const station2 = require('../../data/station2.json')
@@ -44,6 +44,7 @@ lab.experiment('rloi model', () => {
       return Promise.resolve({ Body: JSON.stringify(station) })
     })
   })
+
   lab.afterEach(() => {
     sinon.verify()
     // Restore after each test is Sinon best practice at time of wrting
