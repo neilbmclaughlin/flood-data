@@ -13,6 +13,7 @@ const coastalStation = require('../../data/station-coastal.json')
 const sinon = require('sinon')
 const {
   valuesSchemaQueryMatcher,
+  valuesSchemaVarsMatcher,
   valueParentSchemaQueryMatcher,
   valueParentSchemaVarsMatcher,
   stationSchemaQueryMatcher,
@@ -121,7 +122,7 @@ lab.experiment('rloi model', () => {
   lab.test('RLOI delete Old', async () => {
     const clientHelperMock = sinon.createStubInstance(Client)
     clientHelperMock.query = sinon.mock()
-      .withArgs(sinon.match(/^DELETE FROM u_flood.sls_telemetry_value_parent/))
+      .withArgs(sinon.match(/^deleteOldTelemetry$/))
       .once(1)
       .resolves()
     await rloi.deleteOld(clientHelperMock)
@@ -149,17 +150,17 @@ lab.experiment('rloi model', () => {
     const client = getStubbedDbHelper()
     await rloi.save(file, 's3://devlfw', 'testkey', client, s3)
     sinon.assert.callCount(client.query.withArgs(valueParentSchemaQueryMatcher, valueParentSchemaVarsMatcher), 1)
-    const expectedQuery = {
-      text: 'INSERT INTO "sls_telemetry_value" ("telemetry_value_parent_id", "value", "processed_value", "value_timestamp", "error") VALUES ($1, $2, $3, $4, $5)',
-      values: [
-        1,
-        1.986,
-        1.486,
-        '2018-06-29T11:00:00.000Z',
-        false
-      ]
-    }
-    sinon.assert.calledOnceWithExactly(client.query.withArgs(valuesSchemaQueryMatcher), expectedQuery)
+    const values = [
+      {
+        telemetry_value_parent_id: 1,
+        value: 1.986,
+        processed_value: 1.486,
+        value_timestamp: '2018-06-29T11:00:00.000Z',
+        error: false
+      }
+    ]
+
+    sinon.assert.calledOnceWithExactly(client.query.withArgs(valuesSchemaQueryMatcher, valuesSchemaVarsMatcher), 'slsTelemetryValues', values)
   })
 
   lab.test('negative processed values should not be errors', async () => {
@@ -167,17 +168,17 @@ lab.experiment('rloi model', () => {
     const client = getStubbedDbHelper()
     await rloi.save(file, 's3://devlfw', 'testkey', client, s3)
     sinon.assert.callCount(client.query.withArgs(valueParentSchemaQueryMatcher, valueParentSchemaVarsMatcher), 1)
-    const expectedQuery = {
-      text: 'INSERT INTO "sls_telemetry_value" ("telemetry_value_parent_id", "value", "processed_value", "value_timestamp", "error") VALUES ($1, $2, $3, $4, $5)',
-      values: [
-        1,
-        1.986,
-        -0.014,
-        '2018-06-29T11:00:00.000Z',
-        false
-      ]
-    }
-    sinon.assert.calledOnceWithExactly(client.query.withArgs(valuesSchemaQueryMatcher), expectedQuery)
+    const values = [
+      {
+        telemetry_value_parent_id: 1,
+        value: 1.986,
+        processed_value: -0.014,
+        value_timestamp: '2018-06-29T11:00:00.000Z',
+        error: false
+      }
+    ]
+
+    sinon.assert.calledOnceWithExactly(client.query.withArgs(valuesSchemaQueryMatcher, valuesSchemaVarsMatcher), 'slsTelemetryValues', values)
   })
 
   lab.test('non-numeric values should be flagged as an error', async () => {
@@ -186,17 +187,17 @@ lab.experiment('rloi model', () => {
     const client = getStubbedDbHelper()
     await rloi.save(file, 's3://devlfw', 'testkey', client, s3)
     sinon.assert.callCount(client.query.withArgs(valueParentSchemaQueryMatcher, valueParentSchemaVarsMatcher), 1)
-    const expectedQuery = {
-      text: 'INSERT INTO "sls_telemetry_value" ("telemetry_value_parent_id", "value", "processed_value", "value_timestamp", "error") VALUES ($1, $2, $3, $4, $5)',
-      values: [
-        1,
-        NaN,
-        null,
-        '2018-06-29T11:00:00.000Z',
-        true
-      ]
-    }
-    sinon.assert.calledOnceWithExactly(client.query.withArgs(valuesSchemaQueryMatcher), expectedQuery)
+    const values = [
+      {
+        telemetry_value_parent_id: 1,
+        value: NaN,
+        processed_value: null,
+        value_timestamp: '2018-06-29T11:00:00.000Z',
+        error: true
+      }
+    ]
+
+    sinon.assert.calledOnceWithExactly(client.query.withArgs(valuesSchemaQueryMatcher, valuesSchemaVarsMatcher), 'slsTelemetryValues', values)
   })
 
   lab.test('non-numeric subtract values should be be flagged as an error', async () => {
@@ -211,17 +212,17 @@ lab.experiment('rloi model', () => {
     const client = getStubbedDbHelper()
     await rloi.save(file, 's3://devlfw', 'testkey', client, s3)
     sinon.assert.callCount(client.query.withArgs(valueParentSchemaQueryMatcher, valueParentSchemaVarsMatcher), 1)
-    const expectedQuery = {
-      text: 'INSERT INTO "sls_telemetry_value" ("telemetry_value_parent_id", "value", "processed_value", "value_timestamp", "error") VALUES ($1, $2, $3, $4, $5)',
-      values: [
-        1,
-        1.986,
-        null,
-        '2018-06-29T11:00:00.000Z',
-        true
-      ]
-    }
-    sinon.assert.calledOnceWithExactly(client.query.withArgs(valuesSchemaQueryMatcher), expectedQuery)
+    const values = [
+      {
+        telemetry_value_parent_id: 1,
+        value: 1.986,
+        processed_value: null,
+        value_timestamp: '2018-06-29T11:00:00.000Z',
+        error: true
+      }
+    ]
+
+    sinon.assert.calledOnceWithExactly(client.query.withArgs(valuesSchemaQueryMatcher, valuesSchemaVarsMatcher), 'slsTelemetryValues', values)
   })
 
   lab.test('empty subtract values should be ignored', async () => {
@@ -235,17 +236,17 @@ lab.experiment('rloi model', () => {
     const client = getStubbedDbHelper()
     await rloi.save(file, 's3://devlfw', 'testkey', client, s3)
     sinon.assert.callCount(client.query.withArgs(valueParentSchemaQueryMatcher, valueParentSchemaVarsMatcher), 1)
-    const expectedQuery = {
-      text: 'INSERT INTO "sls_telemetry_value" ("telemetry_value_parent_id", "value", "processed_value", "value_timestamp", "error") VALUES ($1, $2, $3, $4, $5)',
-      values: [
-        1,
-        1.986,
-        1.986,
-        '2018-06-29T11:00:00.000Z',
-        false
-      ]
-    }
-    sinon.assert.calledOnceWithExactly(client.query.withArgs(valuesSchemaQueryMatcher), expectedQuery)
+    const values = [
+      {
+        telemetry_value_parent_id: 1,
+        value: 1.986,
+        processed_value: 1.986,
+        value_timestamp: '2018-06-29T11:00:00.000Z',
+        error: false
+      }
+    ]
+
+    sinon.assert.calledOnceWithExactly(client.query.withArgs(valuesSchemaQueryMatcher, valuesSchemaVarsMatcher), 'slsTelemetryValues', values)
   })
 
   lab.test('Rainfall station and value is stored in DB and station name postfix is removed', async () => {
@@ -261,7 +262,6 @@ lab.experiment('rloi model', () => {
     sinon.assert.callCount(client.query.withArgs(valueParentSchemaQueryMatcher, valueParentSchemaVarsMatcher), 1)
     sinon.assert.callCount(client.query.withArgs(stationSchemaQueryMatcher, stationSchemaVarsMatcher), 1)
     const expectedStationQuery = {
-      text: 'INSERT INTO u_flood.sls_telemetry_station (station_reference, region, station_name, ngr, easting, northing) VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT ON CONSTRAINT unique_station DO UPDATE SET station_name = EXCLUDED.station_name,ngr = EXCLUDED.ngr,easting = EXCLUDED.easting,northing = EXCLUDED.northing;',
       values: [
         '067015_TG 132',
         'North West',
@@ -271,7 +271,7 @@ lab.experiment('rloi model', () => {
         341474
       ]
     }
-    sinon.assert.calledOnceWithExactly(client.query.withArgs(stationSchemaQueryMatcher), expectedStationQuery.text, expectedStationQuery.values)
+    sinon.assert.calledOnceWithExactly(client.query.withArgs(stationSchemaQueryMatcher), 'slsTelemetryStation', expectedStationQuery.values)
   })
 
   lab.test('Rainfall station and value is stored in DB and station name without postfix', async () => {
@@ -283,11 +283,10 @@ lab.experiment('rloi model', () => {
     const file = await parseStringPromise(fs.readFileSync('./test/data/rloi-test-rainfall.xml'))
     await rloi.save(file, 's3://devlfw', 'testkey', client, s3)
     sinon.assert.callCount(client.query, 3)
-    sinon.assert.callCount(client.query.withArgs(valuesSchemaQueryMatcher), 1)
+    sinon.assert.callCount(client.query.withArgs(valuesSchemaQueryMatcher, valuesSchemaVarsMatcher), 1)
     sinon.assert.callCount(client.query.withArgs(valueParentSchemaQueryMatcher, valueParentSchemaVarsMatcher), 1)
     sinon.assert.callCount(client.query.withArgs(stationSchemaQueryMatcher, stationSchemaVarsMatcher), 1)
     const expectedStationQuery = {
-      text: 'INSERT INTO u_flood.sls_telemetry_station (station_reference, region, station_name, ngr, easting, northing) VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT ON CONSTRAINT unique_station DO UPDATE SET station_name = EXCLUDED.station_name,ngr = EXCLUDED.ngr,easting = EXCLUDED.easting,northing = EXCLUDED.northing;',
       values: [
         '067015_TG 132',
         'North West',
@@ -297,7 +296,7 @@ lab.experiment('rloi model', () => {
         341474
       ]
     }
-    sinon.assert.calledOnceWithExactly(client.query.withArgs(stationSchemaQueryMatcher), expectedStationQuery.text, expectedStationQuery.values)
+    sinon.assert.calledOnceWithExactly(client.query.withArgs(stationSchemaQueryMatcher), 'slsTelemetryStation', expectedStationQuery.values)
   })
 
   lab.test('Rainfall station and value is stored in DB and station name with postfix in middle of name', async () => {
@@ -313,7 +312,6 @@ lab.experiment('rloi model', () => {
     sinon.assert.callCount(client.query.withArgs(valueParentSchemaQueryMatcher, valueParentSchemaVarsMatcher), 1)
     sinon.assert.callCount(client.query.withArgs(stationSchemaQueryMatcher, stationSchemaVarsMatcher), 1)
     const expectedStationQuery = {
-      text: 'INSERT INTO u_flood.sls_telemetry_station (station_reference, region, station_name, ngr, easting, northing) VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT ON CONSTRAINT unique_station DO UPDATE SET station_name = EXCLUDED.station_name,ngr = EXCLUDED.ngr,easting = EXCLUDED.easting,northing = EXCLUDED.northing;',
       values: [
         '067015_TG 132',
         'North West',
@@ -323,6 +321,6 @@ lab.experiment('rloi model', () => {
         341474
       ]
     }
-    sinon.assert.calledOnceWithExactly(client.query.withArgs(stationSchemaQueryMatcher), expectedStationQuery.text, expectedStationQuery.values)
+    sinon.assert.calledOnceWithExactly(client.query.withArgs(stationSchemaQueryMatcher), 'slsTelemetryStation', expectedStationQuery.values)
   })
 })

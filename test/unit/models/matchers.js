@@ -1,5 +1,6 @@
 const {
   valuesSchemaQueryMatcher,
+  valuesSchemaVarsMatcher,
   valueParentSchemaQueryMatcher,
   valueParentSchemaVarsMatcher
 } = require('../../schemas/matchers')
@@ -11,16 +12,13 @@ lab.experiment('matchers', () => {
   // Note: these tests are testing code used in the rloi.js unit tests to match and assert on args
   // passed to db.query()
   lab.test('valueParentSchemaQueryMatcher should match', async () => {
-    const query = 'INSERT INTO sls_telemetry_value_parent(filename, imported, rloi_id, station, region, start_timestamp, end_timestamp, parameter, qualifier, units, post_process, subtract, por_max_value, station_type, percentile_5) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING telemetry_value_parent_id'
-    Code.expect(valueParentSchemaQueryMatcher.test(query)).to.be.true()
+    const queryName = 'slsTelemetryValueParent'
+    Code.expect(valueParentSchemaQueryMatcher.test(queryName)).to.be.true()
   })
 
   lab.test('valueParentSchemaQueryMatcher should not match', async () => {
-    const query = {
-      text: 'INSERT INTO "sls_telemetry_value" ("telemetry_value_parent_id", "value", "processed_value", "value_timestamp", "error") VALUES ($1, $2, $3, $4, $5), ($6, $7, $8, $9, $10), ($11, $12, $13, $14, $15), ($16, $17, $18, $19, $20)',
-      values: [1, 1.986, null, '2018-06-29T10:15:00.000Z', true, 1, 1.986, null, '2018-06-29T10:30:00.000Z', true, 1, 1.986, null, '2018-06-29T10:45:00.000Z', true, 1, 1.986, null, '2018-06-29T11:00:00.000Z', true]
-    }
-    Code.expect(valueParentSchemaQueryMatcher.test(query)).to.be.false()
+    const queryName = 'blah'
+    Code.expect(valueParentSchemaQueryMatcher.test(queryName)).to.be.false()
   })
 
   lab.test('valueParentSchemaVarMatcher', async () => {
@@ -48,16 +46,26 @@ lab.experiment('matchers', () => {
     Code.expect(valueParentSchemaVarsMatcher.test(undefined)).to.be.false()
   })
 
+  lab.test('insert values into sls_telemetry_value should match', async () => {
+    const values = [
+      {
+        telemetry_value_parent_id: 1,
+        value: 1.986,
+        processed_value: -0.014,
+        value_timestamp: '2018-06-29T11:00:00.000Z',
+        error: false
+      }
+    ]
+    Code.expect(valuesSchemaVarsMatcher.test(values)).to.be.true()
+  })
+
   lab.test('insert into sls_telemetry_value should match', async () => {
-    const query = {
-      text: 'INSERT INTO "sls_telemetry_value" ("telemetry_value_parent_id", "value", "processed_value", "value_timestamp", "error") VALUES ($1, $2, $3, $4, $5), ($6, $7, $8, $9, $10), ($11, $12, $13, $14, $15), ($16, $17, $18, $19, $20)',
-      values: [1, 1.986, null, '2018-06-29T10:15:00.000Z', true, 1, 1.986, null, '2018-06-29T10:30:00.000Z', true, 1, 1.986, null, '2018-06-29T10:45:00.000Z', true, 1, 1.986, null, '2018-06-29T11:00:00.000Z', true]
-    }
-    Code.expect(valuesSchemaQueryMatcher.test(query)).to.be.true()
+    const queryName = 'slsTelemetryValues'
+    Code.expect(valuesSchemaQueryMatcher.test(queryName)).to.be.true()
   })
 
   lab.test('insert into sls_telemetry_value_parent should not match', async () => {
-    const query = 'INSERT INTO sls_telemetry_value_parent(filename, imported, rloi_id, station, region, start_timestamp, end_timestamp, parameter, qualifier, units, post_process, subtract, por_max_value, station_type, percentile_5) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING telemetry_value_parent_id'
+    const query = 'blah'
     Code.expect(valuesSchemaQueryMatcher.test(query)).to.be.false()
   })
 
