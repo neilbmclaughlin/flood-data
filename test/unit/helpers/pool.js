@@ -59,7 +59,12 @@ describe('DatabasePool', () => {
       // Assert
       expect(poolStub.connect.calledOnce).to.be.true()
       // console.log( clientStub.query.getCalls() )
-      expect(clientStub.query.calledOnceWithExactly('insert into "sls_telemetry_value" ("a", "b", "c") values (1, 2, \'test\')')).to.be.true()
+      expect(clientStub.query.lastCall.args).to.equal([{
+        text: 'insert into "sls_telemetry_value" ("a", "b", "c") values ($1, $2, $3)',
+        values: [
+          1, 2, 'test'
+        ]
+      }])
       expect(clientStub.release.calledOnce).to.be.true()
       // array length should be 6 to match positional parameters
     })
