@@ -4,6 +4,14 @@ const Lab = require('@hapi/lab')
 const { afterEach, beforeEach, describe, it } = exports.lab = Lab.script()
 const proxyquire = require('proxyquire')
 
+const mockConstructedQueries = {
+  exampleQuery: (values) => {
+    return {
+      text: 'INSERT into "some_table" ("a", "b", "c") values ($1, $2, $3)', values
+    }
+  }
+}
+
 describe('DatabasePool', () => {
   let poolStub
   let clientStub
@@ -19,7 +27,8 @@ describe('DatabasePool', () => {
       end: sinon.stub().resolves()
     }
     Pool = proxyquire('../../../lib/helpers/pool', {
-      pg: { Pool: sinon.stub().returns(poolStub) }
+      pg: { Pool: sinon.stub().returns(poolStub) },
+      '../constructed-queries': mockConstructedQueries
     }).Pool
   })
 
@@ -31,27 +40,10 @@ describe('DatabasePool', () => {
     it('should execute query using client from the pool', async () => {
       // Arrange
       const pool = new Pool()
-      const queryName = 'slsTelemetryStation'
-      const values = [1, 2, 'test']
-
-      // Act
-      await pool.query(queryName, values)
-
-      // Assert
-      expect(poolStub.connect.calledOnce).to.be.true()
-      expect(clientStub.query.calledOnceWithExactly({
-        text: sinon.match(/INSERT/),
-        values
-      })).to.be.true()
-      expect(clientStub.release.calledOnce).to.be.true()
-      // array length should be 6 to match positional parameters
-    })
-
-    it('should execute knex query using client from the pool', async () => {
-      // Arrange
-      const pool = new Pool()
-      const queryName = 'slsTelemetryValues'
-      const values = [{ a: 1, b: 2, c: 'test' }]
+      const queryName = 'exampleQuery'
+      const values = [
+        1, 2, 'test'
+      ]
 
       // Act
       await pool.query(queryName, values)
@@ -60,7 +52,7 @@ describe('DatabasePool', () => {
       expect(poolStub.connect.calledOnce).to.be.true()
       // console.log( clientStub.query.getCalls() )
       expect(clientStub.query.lastCall.args).to.equal([{
-        text: 'insert into "sls_telemetry_value" ("a", "b", "c") values ($1, $2, $3)',
+        text: 'INSERT into "some_table" ("a", "b", "c") values ($1, $2, $3)',
         values: [
           1, 2, 'test'
         ]
