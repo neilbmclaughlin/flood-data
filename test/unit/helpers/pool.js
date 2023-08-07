@@ -37,7 +37,7 @@ describe('DatabasePool', () => {
   })
 
   describe('query', () => {
-    it('should execute query using client from the pool', async () => {
+    it('should execute a constructed query using client from the pool', async () => {
       // Arrange
       const pool = new Pool()
       const queryName = 'exampleQuery'
@@ -50,7 +50,6 @@ describe('DatabasePool', () => {
 
       // Assert
       expect(poolStub.connect.calledOnce).to.be.true()
-      // console.log( clientStub.query.getCalls() )
       expect(clientStub.query.lastCall.args).to.equal([{
         text: 'INSERT into "some_table" ("a", "b", "c") values ($1, $2, $3)',
         values: [
@@ -58,20 +57,28 @@ describe('DatabasePool', () => {
         ]
       }])
       expect(clientStub.release.calledOnce).to.be.true()
-      // array length should be 6 to match positional parameters
     })
 
-    it('should throw an error if query name is unknown', async () => {
+    it('should execute an arbitrary query using client from the pool', async () => {
       // Arrange
       const pool = new Pool()
-      const queryName = 'nonExistentQuery'
-      const values = { /* query values */ }
+      const queryString = 'INSERT into "some_other_table" ("a", "b", "c") values ($1, $2, $3)'
+      const values = [
+        'a', 'b', 3
+      ]
 
-      // Act & Assert
-      await expect(pool.query(queryName, values)).to.reject()
-      expect(poolStub.connect.calledOnce).to.be.false()
-      expect(clientStub.query.calledOnce).to.be.false()
-      expect(clientStub.release.calledOnce).to.be.false()
+      // Act
+      await pool.query(queryString, values)
+
+      // Assert
+      expect(poolStub.connect.calledOnce).to.be.true()
+      expect(clientStub.query.lastCall.args).to.equal([{
+        text: 'INSERT into "some_other_table" ("a", "b", "c") values ($1, $2, $3)',
+        values: [
+          'a', 'b', 3
+        ]
+      }])
+      expect(clientStub.release.calledOnce).to.be.true()
     })
   })
   describe('end', () => {
