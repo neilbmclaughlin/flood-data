@@ -1,0 +1,18 @@
+{
+  "situation": "Property flooding is not currently expected. \nRiver levels along the River Coln remain high but steady. The risk of flooding of roads, footpaths and low-lying land remains nearest the river, particularly in the Fosse Bridge and Fairford areas. Levels are expected to remain high over the coming days and will be sensitive to further rainfall.  Please remain aware of your local surroundings and stay safe by avoiding contact with flood water. \nThe forecast is for dry weather with some scattered showers until Sunday  \nPlease refer to the 'River and Sea levels in England' webpage for current river levels and remain safe and aware of your local surroundings. \nThis message will be updated tomorrow, 03/04/20, or if the situation changes.\n ",
+  "ta_d": 2368,
+  "ta_code": "061WAF06Coln",
+  "ta_name": "River Coln and its tributaries",
+  "ta_description": "River Coln and its tributaries from Whittington to the confluence with The River Thames",
+  "quick_dial": "171495",
+  "ta_version": "4",
+  "ta_category": "Flood Alert",
+  "owner_area": "Thames",
+  "ta_created_date": "2015-10-27T00:00:00.000Z",
+  "ta_modified_date": "2016-02-24T00:00:00.000Z",
+  "situation_changed": "2020-04-02T07:24:00.000Z",
+  "severity_changed": "2020-01-28T15:50:00.000Z",
+  "message_received": "2020-04-02T07:25:06.034Z",
+  "severity_value": "1",
+  "severity": "Flood alert"
+}
