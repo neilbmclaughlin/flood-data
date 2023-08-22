@@ -9,5 +9,5 @@ module.exports = {
     Joi.number(),
     Joi.number()
   ),
-  query: Joi.string().required().regex(/\bINSERT INTO u_flood.sls_telemetry_station/)
+  queryName: Joi.string().required().regex(/^slsTelemetryStation$/)
 }
