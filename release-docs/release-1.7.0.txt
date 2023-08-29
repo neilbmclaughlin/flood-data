@@ -1,0 +1,18 @@
+#flood-data release 1.7.0 - 7th September 2023
+
+Update of rloi-process and rloi-refresh lambdas. These lambdas previously used the node-sql npm package to construct large INSERT sql statements,
+this package had a vulnerability and is no longer updated.
+This release changes these lambdas to use the knex npm package for these queries which is maintained and does not have a vulnerability.
+
+
+# Tickets
+
+https://eaflood.atlassian.net/browse/FSR-901
+
+# Deployment
+
+  * LFW_{STAGE}_MISC_JOBS/LFW_{STAGE}_99_DEPLOY_FLOOD_DATA_PIPELINE
+
+Inform flood devs
+
+Thanks.

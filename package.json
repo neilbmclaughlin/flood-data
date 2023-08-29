@@ -1,6 +1,6 @@
 {
   "name": "flood-data",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Serverless (AWS Lambda) project for flood data processing",
   "engines": {
     "node": "16.x"
