@@ -19,19 +19,22 @@ experiment('parseThresholds tests', () => {
         floodWarningArea: '033WAF309',
         floodWarningType: 'A',
         direction: 'd',
-        level: 1.3
+        level: 1.3,
+        thresholdType: 'FW RES FAL'
       },
       {
         floodWarningArea: '033FWF3TRENT04',
         floodWarningType: 'W',
         direction: 'd',
-        level: 1.37
+        level: 1.37,
+        thresholdType: 'FW ACTCON FW'
       },
       {
         floodWarningArea: '033FWF3TRENT04',
         floodWarningType: 'W',
         direction: 'd',
-        level: 1.77
+        level: 1.77,
+        thresholdType: 'FW RES FW'
       }
     ])
   })
