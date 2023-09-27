@@ -337,7 +337,7 @@ experiment('imtd processing', () => {
       const logErrorCalls = logger.error.getCalls()
       expect(logErrorCalls.length).to.equal(2)
       expect(logErrorCalls[0].args[0]).to.equal('Database error processing thresholds for station 1001')
-      expect(logErrorCalls[1].args[0]).to.equal('Could not process data for station 1001 (insert into "station_imtd_threshold" ("direction", "fwis_code", "fwis_type", "station_id", "value") values ($1, $2, $3, $4, $5), ($6, $7, $8, $9, $10), ($11, $12, $13, $14, $15), ($16, $17, $18, $19, $20), ($21, $22, $23, $24, $25), ($26, $27, $28, $29, $30) - Insert Fail)')
+      expect(logErrorCalls[1].args[0]).to.equal('Could not process data for station 1001 (insert into "station_imtd_threshold" ("direction", "fwis_code", "fwis_type", "station_id", "threshold_type", "value") values ($1, $2, $3, $4, $5, $6), ($7, $8, $9, $10, $11, $12), ($13, $14, $15, $16, $17, $18), ($19, $20, $21, $22, $23, $24), ($25, $26, $27, $28, $29, $30), ($31, $32, $33, $34, $35, $36) - Insert Fail)')
 
       const logInfoCalls = logger.info.getCalls()
       expect(logInfoCalls.length).to.equal(0)
