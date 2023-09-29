@@ -185,8 +185,8 @@ experiment('imtd processing', () => {
 
       await handler()
       const logInfoCalls = logger.info.getCalls()
-      expect(logInfoCalls.length).to.equal(1)
-      expect(logInfoCalls[0].args[0]).to.equal('Processed 6 thresholds for RLOI id 1001')
+      expect(logInfoCalls.length).to.equal(3)
+      expect(logInfoCalls[2].args[0]).to.equal('Processed 6 thresholds for RLOI id 1001')
     })
   })
 
@@ -199,9 +199,9 @@ experiment('imtd processing', () => {
       await handler()
 
       const logInfoCalls = logger.info.getCalls()
-      expect(logInfoCalls.length).to.equal(2)
-      expect(logInfoCalls[0].args[0]).to.equal('Station 1001 not found (HTTP Status: 404)')
-      expect(logInfoCalls[1].args[0]).to.equal('Deleted thresholds for RLOI id 1001')
+      expect(logInfoCalls.length).to.equal(4)
+      expect(logInfoCalls[2].args[0]).to.equal('Station 1001 not found (HTTP Status: 404)')
+      expect(logInfoCalls[3].args[0]).to.equal('Deleted thresholds for RLOI id 1001')
 
       const logErrorCalls = logger.error.getCalls()
       expect(logErrorCalls.length).to.equal(0)
@@ -250,7 +250,7 @@ experiment('imtd processing', () => {
       await handler()
 
       const logInfoCalls = logger.info.getCalls()
-      expect(logInfoCalls.length).to.equal(1)
+      expect(logInfoCalls.length).to.equal(3)
 
       const logErrorCalls = logger.error.getCalls()
       expect(logErrorCalls.length).to.equal(1)
@@ -290,7 +290,7 @@ experiment('imtd processing', () => {
       expect(returnedError.message).to.equal('Could not get list of id\'s from database (Error: select distinct "rloi_id" from "rivers_mview" where "rloi_id" is not null order by "rloi_id" asc limit $1 - refused)')
 
       const logInfoCalls = logger.info.getCalls()
-      expect(logInfoCalls.length).to.equal(0)
+      expect(logInfoCalls.length).to.equal(1)
 
       const logErrorCalls = logger.error.getCalls()
       expect(logErrorCalls.length).to.equal(0)
@@ -327,7 +327,7 @@ experiment('imtd processing', () => {
       expect(logErrorCalls[1].args[0]).to.equal('Could not process data for station 1001 (delete from "station_imtd_threshold" where "station_id" = $1 - Delete Fail)')
 
       const logInfoCalls = logger.info.getCalls()
-      expect(logInfoCalls.length).to.equal(0)
+      expect(logInfoCalls.length).to.equal(2)
     })
     test('it should log an error when DB connection fails when deleting thresholds when there are no thresholds to insert', async () => {
       tracker.on('query', function (query, step) {
@@ -353,7 +353,7 @@ experiment('imtd processing', () => {
       expect(logErrorCalls[1].args[0]).to.equal('Could not process data for station 1001 (delete from "station_imtd_threshold" where "station_id" = $1 - Delete Fail)')
 
       const logInfoCalls = logger.info.getCalls()
-      expect(logInfoCalls.length).to.equal(0)
+      expect(logInfoCalls.length).to.equal(2)
     })
     test('it should log an error and rollback when DB connection fails when inserting thresholds', async () => {
       tracker.on('query', function (query, step) {
@@ -391,7 +391,7 @@ experiment('imtd processing', () => {
       expect(logErrorCalls[1].args[0]).to.equal('Could not process data for station 1001 (insert into "station_imtd_threshold" ("direction", "fwis_code", "fwis_type", "station_id", "threshold_type", "value") values ($1, $2, $3, $4, $5, $6), ($7, $8, $9, $10, $11, $12), ($13, $14, $15, $16, $17, $18), ($19, $20, $21, $22, $23, $24), ($25, $26, $27, $28, $29, $30), ($31, $32, $33, $34, $35, $36) - Insert Fail)')
 
       const logInfoCalls = logger.info.getCalls()
-      expect(logInfoCalls.length).to.equal(0)
+      expect(logInfoCalls.length).to.equal(2)
     })
   })
 })
