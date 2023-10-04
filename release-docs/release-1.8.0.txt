@@ -1,0 +1,17 @@
+#flood-data release 1.8.0 - 10th October 2023
+
+Node version upgrade for lambda functions.
+
+# Tickets
+
+https://eaflood.atlassian.net/browse/FSR-708 - Upgrade Node version on flood-data Lambdas
+https://eaflood.atlassian.net/browse/FSR-1053 - Add New Column threshold_type to station_imtd_threshold Table
+
+# Deployment
+
+  * LFW_{STAGE}_02_UPDATE_DATABASE
+  * LFW_{STAGE}_MISC_JOBS/LFW_{STAGE}_99_DEPLOY_FLOOD_DATA_PIPELINE
+
+Inform flood devs
+
+Thanks.
