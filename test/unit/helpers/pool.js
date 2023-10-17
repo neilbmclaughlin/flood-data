@@ -59,26 +59,27 @@ describe('DatabasePool', () => {
       expect(clientStub.release.calledOnce).to.be.true()
     })
 
-    it('should execute an arbitrary query using client from the pool', async () => {
+    it('should throw an error if asked to execute an unknown query', async () => {
       // Arrange
       const pool = new Pool()
-      const queryString = 'INSERT into "some_other_table" ("a", "b", "c") values ($1, $2, $3)'
+      const queryName = 'unknownQuery'
       const values = [
-        'a', 'b', 3
+        1, 2, 'test'
       ]
 
       // Act
-      await pool.query(queryString, values)
+      let error
+      try {
+        await pool.query(queryName, values)
+      } catch (e) {
+        error = e
+      }
 
       // Assert
-      expect(poolStub.connect.calledOnce).to.be.true()
-      expect(clientStub.query.lastCall.args).to.equal([{
-        text: 'INSERT into "some_other_table" ("a", "b", "c") values ($1, $2, $3)',
-        values: [
-          'a', 'b', 3
-        ]
-      }])
-      expect(clientStub.release.calledOnce).to.be.true()
+      expect(poolStub.connect.calledOnce).to.be.false()
+      expect(clientStub.query.called).to.be.false()
+      expect(error).to.be.instanceof(Error)
+      expect(error.message).to.equal('Query not found \'unknownQuery\'')
     })
   })
   describe('end', () => {
