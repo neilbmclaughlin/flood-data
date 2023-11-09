@@ -1,0 +1,21 @@
+#flood-data release 2.0.0 - 14th November 2023
+
+Update of fwis-process, fgs-process, ffoi-process and station-process lambdas.
+These lambdas previously used the node-sql npm package to construct large INSERT sql statements.
+This package had a vulnerability and is no longer updated, this change removes this package from flood-data's dependencies.
+
+# Tickets
+
+https://eaflood.atlassian.net/browse/FSR-965 - 
+
+# Deployment
+
+Note: this will require the application role to be updated with:
+permission: lambda:invokeFunction
+on resource: arn:aws:lambda:*:${aws-account-id}:function:${stage}ldnlfw-*
+
+  * LFW_{STAGE}_MISC_JOBS/LFW_{STAGE}_99_DEPLOY_FLOOD_DATA_PIPELINE
+
+Inform flood devs
+
+Thanks.
