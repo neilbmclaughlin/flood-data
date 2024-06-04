@@ -1,0 +1,7 @@
+{
+  "Description": "Event rule to schedule the dtsProcess lambda execution",
+  "Name": "{PLACEHOLDER}",
+  "RoleArn": "{PLACEHOLDER}",
+  "ScheduleExpression": "{PLACEHOLDER}",
+  "State": "ENABLED"
+}
