@@ -1,0 +1,23 @@
+#flood-data release 2.1.0 - 11th June 2024
+
+Creation of lambda function to use the DisplayTimeSeries property and various sonarcloud and dependency updates.
+
+# Tickets
+
+https://eaflood.atlassian.net/browse/FSR-1159 - Sonarcloud issues on Flood data
+
+https://eaflood.atlassian.net/browse/FSR-1171 - Update dependencies in Flood data
+
+https://eaflood.atlassian.net/browse/FSR-818 - Create lambda function to use the DisplayTimeSeries property from the IMTD API to populate the ffoi_station table
+
+# Deployment
+
+Note: this will require the application role to be updated with:
+permission: lambda:invokeFunction
+on resource: arn:aws:lambda:*:${aws-account-id}:function:${stage}ldnlfw-*
+
+  * LFW_{STAGE}_MISC_JOBS/LFW_{STAGE}_99_DEPLOY_FLOOD_DATA_PIPELINE
+
+Inform flood devs
+
+Thanks.
