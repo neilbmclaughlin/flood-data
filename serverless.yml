@@ -63,3 +63,7 @@ functions:
     name: ${env:LFW_DATA_TARGET_ENV_NAME}${self:service}-imtdProcess
     handler: lib/functions/imtd-process.handler
     timeout: 900
+  dtsProcess:
+    name: ${env:LFW_DATA_TARGET_ENV_NAME}${self:service}-dtsProcess
+    handler: lib/functions/dts-process.handler
+    timeout: 900

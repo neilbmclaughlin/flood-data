@@ -136,6 +136,25 @@ const apiNoMatchingThresholdResponse = {
   ]
 }
 
-const flattenedData = [{ stationId: 9521, floodWarningArea: '113FWFEXE04', floodWarningType: 'W', direction: 'u', level: 2.4 }, { stationId: 9521, floodWarningArea: '113FWFEXE03', floodWarningType: 'W', direction: 'u', level: 2.5 }, { stationId: 9521, floodWarningArea: '113FWFEXE04', floodWarningType: 'W', direction: 'u', level: 2.7 }, { stationId: 9521, floodWarningArea: '113FWFEXE06', floodWarningType: 'W', direction: 'u', level: 2.9 }, { stationId: 9521, floodWarningArea: '113FWFEXE05', floodWarningType: 'W', direction: 'u', level: 3.6 }, { stationId: 9524, floodWarningArea: '121WAF910', floodWarningType: 'A', direction: 'u', level: 0.95 }, { stationId: 9524, floodWarningArea: '121FWF214', floodWarningType: 'W', direction: 'u', level: 1.2 }, { stationId: 9524, floodWarningArea: '121FWF214', floodWarningType: 'W', direction: 'u', level: 1.7 }, { stationId: 9525, floodWarningArea: '121WAF918', floodWarningType: 'A', direction: 'u', level: 0.7 }, { stationId: 9525, floodWarningArea: '121FWF121', floodWarningType: 'W', direction: 'u', level: 0.7 }, { stationId: 9525, floodWarningArea: '121FWF121', floodWarningType: 'W', direction: 'u', level: 1.25 }]
+const api404 = {
+  type: 'https://tools.ietf.org/html/rfc7231#section-6.5.4',
+  title: 'Not Found',
+  status: 404,
+  traceId: '0HN38TFTTO070:00000003'
+}
 
-module.exports = { stations, apiResponse, apiNoMatchingThresholdResponse, flattenedData }
+const flattenedData = [
+  { stationId: 9521, floodWarningArea: '113FWFEXE04', floodWarningType: 'W', direction: 'u', level: 2.4 },
+  { stationId: 9521, floodWarningArea: '113FWFEXE03', floodWarningType: 'W', direction: 'u', level: 2.5 },
+  { stationId: 9521, floodWarningArea: '113FWFEXE04', floodWarningType: 'W', direction: 'u', level: 2.7 },
+  { stationId: 9521, floodWarningArea: '113FWFEXE06', floodWarningType: 'W', direction: 'u', level: 2.9 },
+  { stationId: 9521, floodWarningArea: '113FWFEXE05', floodWarningType: 'W', direction: 'u', level: 3.6 },
+  { stationId: 9524, floodWarningArea: '121WAF910', floodWarningType: 'A', direction: 'u', level: 0.95 },
+  { stationId: 9524, floodWarningArea: '121FWF214', floodWarningType: 'W', direction: 'u', level: 1.2 },
+  { stationId: 9524, floodWarningArea: '121FWF214', floodWarningType: 'W', direction: 'u', level: 1.7 },
+  { stationId: 9525, floodWarningArea: '121WAF918', floodWarningType: 'A', direction: 'u', level: 0.7 },
+  { stationId: 9525, floodWarningArea: '121FWF121', floodWarningType: 'W', direction: 'u', level: 0.7 },
+  { stationId: 9525, floodWarningArea: '121FWF121', floodWarningType: 'W', direction: 'u', level: 1.25 }
+]
+
+module.exports = { stations, apiResponse, apiNoMatchingThresholdResponse, flattenedData, api404 }

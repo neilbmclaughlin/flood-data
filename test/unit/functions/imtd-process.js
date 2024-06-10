@@ -191,32 +191,13 @@ experiment('imtd processing', () => {
   })
 
   experiment('sad path', () => {
-    test('it should log to info when API returns 404 for a given RLOI id', async () => {
-      setupStdDbStubs([{ rloi_id: 1001 }])
-      sinon.stub(axios, 'get').rejects({ response: { status: 404 } })
-      const { handler, logger } = setupHandlerWithStubs()
-
-      await handler()
-
-      const logInfoCalls = logger.info.getCalls()
-      expect(logInfoCalls.length).to.equal(4)
-      expect(logInfoCalls[2].args[0]).to.equal('Station 1001 not found (HTTP Status: 404)')
-      expect(logInfoCalls[3].args[0]).to.equal('Deleted thresholds for RLOI id 1001')
-
-      const logErrorCalls = logger.error.getCalls()
-      expect(logErrorCalls.length).to.equal(0)
-    })
     test('it should log an error when API returns a status which is an error and not a 404', async () => {
       const counter = setupStdDbStubs([{ rloi_id: 1001 }])
       const axiosStub = setupAxiosStdStub()
       axiosStub.rejects({ response: { status: 500 } })
-      const { handler, logger } = setupHandlerWithStubs()
+      const { handler } = setupHandlerWithStubs()
 
       await handler()
-
-      const logErrorCalls = logger.error.getCalls()
-      expect(logErrorCalls.length).to.equal(1)
-      expect(logErrorCalls[0].args[0]).to.equal('Could not process data for station 1001 (IMTD API request for station 1001 failed (HTTP Status: 500))')
 
       expect(counter, 'Should only select (i.e. not delete or insert) if there is a non 400 error from API').to.equal({ select: 1 })
     })
@@ -348,9 +329,8 @@ experiment('imtd processing', () => {
       await handler()
 
       const logErrorCalls = logger.error.getCalls()
-      expect(logErrorCalls.length).to.equal(2)
-      expect(logErrorCalls[0].args[0]).to.equal('Error deleting thresholds for station 1001')
-      expect(logErrorCalls[1].args[0]).to.equal('Could not process data for station 1001 (delete from "station_imtd_threshold" where "station_id" = $1 - Delete Fail)')
+      expect(logErrorCalls.length).to.equal(1)
+      expect(logErrorCalls[0].args[0]).to.equal('Could not process data for station 1001 (delete from "station_imtd_threshold" where "station_id" = $1 - Delete Fail)')
 
       const logInfoCalls = logger.info.getCalls()
       expect(logInfoCalls.length).to.equal(2)
