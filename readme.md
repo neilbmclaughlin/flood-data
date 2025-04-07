@@ -2,9 +2,11 @@
 
 # flood-data
 
-## synopsis
+## Synopsis
 
-This is a serverless project to provide the processing of data files for LFW from FWFI
+This repo contains multiple AWS lambda functions to provide the processing of data files for LFW from FWFI
+
+## Lambda Functions
 
 ### ffoi-process
 
@@ -34,16 +36,14 @@ refreshes the materialized views and clears out the old telemetry.
 
 Uses the exports context file from sharepoint to update the stations in the database.
 
-## Installing
+## Local development
 
-### There is a global dependency on [serverless](https://serverless.com/) which is used for configuration and deployments to AWS
-`npm i -g serverless`
-
-`npm install`
+This will use [localstack](https://docs.localstack.cloud/) and the supporting
+files and documentation to follow.
 
 ## Deployment
 
-`npm run deploy`
+This is installed using terraforms/terragrunt which is managed by WebOps
 
 ## Unit tests and linting
 `npm run pre-deployment-test`
