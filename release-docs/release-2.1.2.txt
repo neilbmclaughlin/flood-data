@@ -1,0 +1,18 @@
+#Flood-data release 2.2.0 - 10th April 2025
+
+Move from Serverless to Terraform for deployment of Lambdas
+
+Note - This commit is just the release docs, all work has been merged in on previous commits
+
+# Tickets
+
+https://eaflood.atlassian.net/browse/FSR-1404 - Move Lambdas to Terraform
+
+
+# Deployment
+
+Webops to create and run below job plus there may be some changes driven by WebOps
+
+* LFW_{STAGE}_99_DEPLOY_FLOOD_DATA_PIPELINE_TF
+
+Thanks.
