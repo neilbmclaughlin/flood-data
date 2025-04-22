@@ -7,14 +7,14 @@ jobs:
 
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
               with:
                 fetch-depth: 0
 
             - name: Install nodejs
-              uses: actions/setup-node@v1
+              uses: actions/setup-node@v4
               with:
-                node-version: "18.x"
+                node-version-file: '.nvmrc'
             
             - name: Install node dependencies
               run: npm ci
@@ -37,4 +37,4 @@ jobs:
                   -Dsonar.projectKey=DEFRA_flood-data
                   -Dsonar.exclusions=**/node_modules/**,**/test/**,**/test-output/**,**/queries.js
                   -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-                  -Dsonar.javascript.exclusions=**/node_modules/**,**/test/**,**/test-output/**,**/queries.js
+                  -Dsonar.javascript.exclusions=**/node_modules/**,**/test/**,**/test-output/**,**/queries.js,**/release-docs/lib/**
