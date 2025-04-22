@@ -1,0 +1,12 @@
+#Flood-data release 2.3.0 - 6th May 2025
+
+Upgrade node runtime for lambdas to 20x
+
+# Tickets
+
+https://eaflood.atlassian.net/browse/FSR-1387
+
+
+# Deployment
+
+See release notes for 8.15.0 in flood-app
