@@ -41,7 +41,7 @@
     "moment-timezone": "0.5.34",
     "ngr-to-bng": "0.0.1",
     "pg": "8.7.1",
-    "proxy-agent": "5.0.0",
+    "proxy-agent": "6.5.0",
     "sql": "0.78.0",
     "xml2js": "0.4.23"
   }
