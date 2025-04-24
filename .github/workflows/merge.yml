@@ -1,0 +1,86 @@
+name: Merge Release Branch and Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        description: version for release
+
+jobs:
+  merge_release_branch_and_create_release:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Display inputs
+        run: echo "${{ github.event.inputs.version }}"
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: development
+          fetch-depth: 0
+
+      - name: Set up Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Setup version env vars
+        run: |
+          version=${{ github.event.inputs.version }}
+          echo VERSION=$version >> "$GITHUB_ENV"
+          echo RELEASE_BRANCH="release/$version" >> "$GITHUB_ENV"
+          echo TAG_VERSION="v$version" >> "$GITHUB_ENV"
+          echo RELEASE_NOTES_FILE="./release-docs/CFF-${version}.md" >> "$GITHUB_ENV"
+
+      - name: Check branch exists
+        run: |
+          if ! git ls-remote --exit-code origin "refs/heads/${RELEASE_BRANCH}"; then
+            echo "Error: Branch ${RELEASE_BRANCH} does not exist." >&2
+            exit 1
+          fi
+
+      - name: Check PR's approved
+        run: |
+            function prCheck () {
+              REPO=$1
+              BASE=$2
+              STATE=$(gh pr list --repo $GITHUB_REPOSITORY_OWNER/$REPO --json title,mergeStateStatus,state,reviews --state OPEN --base $BASE --head $RELEASE_BRANCH --jq '.[] | select(.mergeStateStatus == "CLEAN" and .reviews[-1].state == "APPROVED") | .reviews[-1].state')
+              if [ "$STATE" != "APPROVED" ]; then
+                echo "Error: PR for merging $GITHUB_REPOSITORY_OWNER/$REPO $RELEASE_BRANCH into $BASE needs to be ready to merge and approved. (STATE=$STATE)" >&2
+                exit 1
+              fi
+            }
+            prCheck flood-data master
+            prCheck flood-data development
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge release branch into master
+        run: |
+          git switch $RELEASE_BRANCH
+          git switch master
+          git \
+            -c user.name="GitHub Actions" \
+            -c user.email="actions@github.com" \
+          merge --no-ff $RELEASE_BRANCH
+          git push
+
+      - name: Create GitHub Release
+        run: gh release create $TAG_VERSION --title "Release $VERSION" --notes "[release notes](/$RELEASE_NOTES_FILE)"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge release branch into development
+        run: |
+          git switch development
+          git \
+            -c user.name="GitHub Actions" \
+            -c user.email="actions@github.com" \
+          merge--no-ff $RELEASE_BRANCH
+          git push
