@@ -1,0 +1,101 @@
+name: Create Release Branch and Pull Requests
+
+on:
+  workflow_dispatch:
+    inputs:
+      proposed_release_date:
+        type: string
+        description: 'Proposed release date (e.g., 2025-05-01)'
+        required: true
+      jira_release_id:
+        type: string
+        description: 'Jira Release ID'
+        required: true
+      db-changes:
+        type: boolean
+        description: 'Database changes included'
+        default: false
+      increment:
+        type: choice
+        description: 'Release increment (will be used to bump the current version)'
+        options:
+        - major
+        - minor
+        - patch
+
+
+jobs:
+  create_release_branch_and_draft_pr:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Display inputs
+        run: echo "${{ github.event.inputs.jira_release_id }} ${{ github.event.inputs.increment }} ${{ github.event.inputs.proposed_release_date }}"
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: development
+          fetch-depth: 0
+
+      - name: Set up Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Bump version
+        run: |
+          npm version --no-git-tag-version "${{ github.event.inputs.increment }}"
+          version=$(jq -r '.version' package.json)
+          echo VERSION=$version >> "$GITHUB_ENV"
+          echo RELEASE_BRANCH="release/$version" >> "$GITHUB_ENV"
+
+      - name: Check branch doesn't already exist
+        run: |
+          if git ls-remote --exit-code origin "refs/heads/${RELEASE_BRANCH}"; then
+            echo "Error: Branch ${RELEASE_BRANCH} already exists." >&2
+            exit 1
+          fi
+
+      - name: Create release branch
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git switch -c $RELEASE_BRANCH
+          git add .
+          git commit -m "Bump version number (${VERSION})"
+          git push origin $RELEASE_BRANCH
+
+      - name: Generate Release Notes
+        uses: defra/release-notes-action@v1
+        with:
+          template-file: './release-docs/template.njk'
+          output-file: './release-docs/CFF-${{ env.VERSION }}.md'
+          release-version: ${{ env.VERSION }}
+          template-data: |
+            {
+              "date": "${{ github.event.inputs.proposed_release_date }}",
+              "id": "${{ github.event.inputs.jira_release_id }}"
+            }
+          base-branch: 'origin/master'
+          release-branch: ${{ env.RELEASE_BRANCH }}
+          ticket-pattern: 'FSR-[0-9]+.*'
+
+      - name: Create Draft PRs
+        run: |
+          gh pr create --base master --title "Release $VERSION" --body "TBC"
+          gh pr create --base development --title "Release $VERSION"  --body "TBC"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Clean up
+        if: ${{ failure() }}
+        run: |
+          if git ls-remote --exit-code origin "refs/heads/${RELEASE_BRANCH}"; then
+            echo "Workflow failed, removing created release branch"
+            git push --delete origin $RELEASE_BRANCH
+          fi
