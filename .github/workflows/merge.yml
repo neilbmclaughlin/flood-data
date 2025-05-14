@@ -52,7 +52,7 @@ jobs:
           git \
             -c user.name="GitHub Actions" \
             -c user.email="actions@github.com" \
-          merge $RELEASE_BRANCH
+          merge --no-ff $RELEASE_BRANCH
           git push
 
       - name: Create GitHub Release
@@ -66,5 +66,5 @@ jobs:
           git \
             -c user.name="GitHub Actions" \
             -c user.email="actions@github.com" \
-          merge $RELEASE_BRANCH
+          merge--no-ff $RELEASE_BRANCH
           git push
