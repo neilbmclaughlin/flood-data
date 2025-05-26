@@ -40,7 +40,7 @@
     "directly": "^2.0.6",
     "joi": "^17.13.3",
     "knex": "^3.1.0",
-    "moment-timezone": "^0.5.47",
+    "moment-timezone": "^0.6.0",
     "ngr-to-bng": "^0.0.1",
     "pg": "^8.13.1",
     "proxy-agent": "^6.5.0",
