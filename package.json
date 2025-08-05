@@ -38,7 +38,7 @@
     "axios": "^1.7.9",
     "csvtojson": "^2.0.10",
     "directly": "^2.0.6",
-    "joi": "^17.13.3",
+    "joi": "^18.0.0",
     "knex": "^3.1.0",
     "moment-timezone": "^0.5.47",
     "ngr-to-bng": "^0.0.1",
